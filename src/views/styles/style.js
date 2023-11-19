@@ -1,8 +1,10 @@
 import {StyleSheet} from 'react-native';
 
 const style = StyleSheet.create({
+
   mainSafe: {
     flex: 1,
+    color:'#2c3e50',
   },
   container: {
     flexDirection: 'row',
@@ -67,6 +69,7 @@ const style = StyleSheet.create({
   userDetailsName: {
     fontSize: 18,
     fontWeight: 'bold',
+    color:'black',
   },
   MessageCardView1: {
     flex: 4,
@@ -89,6 +92,7 @@ const style = StyleSheet.create({
   MessageCardText: {
     fontSize: 20,
     fontWeight: 'bold',
+    color:'black',
   },
   MassageCountBadgeView1: {
     flex: 1,
@@ -117,6 +121,7 @@ const style = StyleSheet.create({
   },
   MassageCountBadgeText2: {
     fontSize: 12,
+    color:'gray',
   },
   RecivedMessageView1: {
     marginTop: 10,
@@ -218,6 +223,7 @@ const style = StyleSheet.create({
     width: '80%',
     marginLeft: 10,
     paddingLeft: 10,
+    color:'black',
   },
   chatIcon3: {
     marginLeft: 15,
@@ -236,6 +242,7 @@ const style = StyleSheet.create({
     paddingLeft: 25,
     paddingRight: 20,
     fontSize: 18,
+    color:'black',
   },
   contactView2: {
     width: '100%',
@@ -318,6 +325,7 @@ const style = StyleSheet.create({
   myProfileText1: {
     fontSize: 20,
     fontWeight: 'bold',
+    color:'black',
   },
   myProfileView7: {
     width: '90%',
@@ -329,6 +337,7 @@ const style = StyleSheet.create({
   },
   myProfileText2: {
     marginTop: 10,
+    color:'black',
   },
   myProfileView10: {
     flexDirection: 'row',
@@ -344,6 +353,7 @@ const style = StyleSheet.create({
   myProfileText3: {
     fontSize: 20,
     fontWeight: 'bold',
+    color:'black',
   },
   myProfileView14: {
     width: '90%',
@@ -367,6 +377,7 @@ const style = StyleSheet.create({
   myProfileText4: {
     fontSize: 20,
     fontWeight: 'bold',
+    color:'black',
   },
   myProfileView20: {
     width: '90%',
@@ -374,6 +385,7 @@ const style = StyleSheet.create({
   myProfileText5: {
     fontSize: 18,
     marginTop: 5,
+    color:'black',
   },
   myProfileToucheble2: {
     backgroundColor: '#0984e3',
@@ -401,6 +413,7 @@ const style = StyleSheet.create({
     paddingLeft: 45,
     paddingRight: 20,
     fontSize: 15,
+    color:'black',
   },
   inputSet: {
     marginTop: 50,
@@ -474,6 +487,12 @@ const style = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: 'black',
+    textDecorationLine:'underline',
+  },
+  signInTextc2: {
+    fontSize: 15,
+    fontWeight: 'bold',
+    color: 'green',
     textDecorationLine:'underline',
   },
   signUpSelect:{

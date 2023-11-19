@@ -2,6 +2,7 @@ import {Text, View, Image, TouchableOpacity, Alert} from 'react-native';
 import React from 'react';
 import {style} from '../styles/style';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import baseUrl from '../../baseurl';
 
 export default function RequestCard(props) {
 
@@ -18,7 +19,7 @@ export default function RequestCard(props) {
 
     request.open(
       'GET',
-      'http://192.168.8.106/chatfox/acceptRequest.php?r=' + props.requestId,
+      baseUrl + 'chatfox/acceptRequest.php?r=' + props.requestId,
       true,
     );
     request.send();
@@ -36,7 +37,7 @@ export default function RequestCard(props) {
 
     request.open(
       'GET',
-      'http://192.168.8.106/chatfox/rejectRequest.php?r=' + props.requestId,
+      baseUrl + 'chatfox/rejectRequest.php?r=' + props.requestId,
       true,
     );
     request.send();
@@ -47,7 +48,7 @@ export default function RequestCard(props) {
       <View style={style.MessageCardView1}>
         <View style={style.MessageCardView2}>
           <Image
-            source={{uri: 'https://reactjs.org/logo-og.png'}}
+            source={{uri: baseUrl + props.image}}
             style={style.MessageCardImage}
           />
         </View>

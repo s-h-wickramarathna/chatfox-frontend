@@ -8,17 +8,19 @@ import RecivedMassage from './components/RecivedMassage';
 import SentMessage from './components/SentMessage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import baseUrl from '../baseurl';
 
 export default function chat(props) {
   const [friend_id,setFriendId] = useState(props.route.params.id);
   const [friend_name,setFriendName] = useState(props.route.params.name);
+  const [friend_image,setFriendImage] = useState(props.route.params.image);
   const [mitem,setMItem] = useState([]);
   const [text,setText] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const scrollViewRef = useRef();
 
   state = {
-    inputTextValue : '',
+    inputTextValue : text,
  }
  const onRefresh = React.useCallback(() => {
   setRefreshing(true);
@@ -39,7 +41,7 @@ export default function chat(props) {
 
     request.open(
       'GET',
-      'http://192.168.8.106/chatfox/loadChat.php?u=' + userJSONText + '&f=' + friend_id,
+      baseUrl+'chatfox/loadChat.php?u=' + userJSONText + '&f=' + friend_id,
       true,
     );
     request.send();
@@ -52,14 +54,14 @@ export default function chat(props) {
       if (request.readyState == 4 && request.status == 200) {
         // console.log(request.responseText);
         if(request.responseText == 1){
-          this.setText({inputTextValue : ''})
+          setText("");
         }
       }
     };
 
     request.open(
       'GET',
-      'http://192.168.8.106/chatfox/sendChat.php?u=' + userJSONText + '&f=' + friend_id + '&t=' + text,
+      baseUrl+'chatfox/sendChat.php?u=' + userJSONText + '&f=' + friend_id + '&t=' + text,
       true,
     );
     request.send();
@@ -72,14 +74,14 @@ export default function chat(props) {
     <>
     <SafeAreaView style={style.mainSafe}>
     <View style={style.messageCardContainer}>
-        <ChatUserDetails name={friend_name}/>
+        <ChatUserDetails name={friend_name} image={friend_image}/>
         <View style={style.chatView1}>
           <Icon name="phone" size={30} color="#000" style={style.chatIcon1} />
           <Icon name="info-circle" size={30} color="#000" style={style.chatIcon2}/>
         </View>
       </View>
 
-      <ScrollView ref={scrollViewRef}
+      <ScrollView ref={scrollViewRef} style={{marginBottom:100,}}
       onContentSizeChange={() => scrollViewRef.current.scrollToEnd({ animated: true })}
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -95,14 +97,12 @@ export default function chat(props) {
         </View>
         {mitem.map(data => (
           data.side == "Left" ? <RecivedMassage msg={data.message} time={data.time}/> :<SentMessage msg={data.message} time={data.time}/>
-            
 
-          
         ))}
       </ScrollView>
 
       <View style={style.chatView5}>
-        <TextInput style={style.chatInput1} placeholder="Type Message ...." onChangeText={setText} value={this.state.inputTextValue}/>
+        <TextInput style={style.chatInput1} placeholder="Type Message ...." placeholderTextColor="gray" onChangeText={setText} value={this.state.inputTextValue}/>
         <TouchableOpacity onPress={sendMessage}>
         <Icon name="send" size={30} color="#000" style={style.chatIcon3} />
         </TouchableOpacity>

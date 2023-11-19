@@ -6,42 +6,97 @@ import {
   TouchableOpacity,
   TextInput,
   Button,
+  Alert,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {style} from './styles/style';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
+import baseUrl from '../baseurl';
+import {useNavigation} from '@react-navigation/native';
 
-export default function myProfile() {
-  const [details, setDetails] = useState([]);
-  const [profileImage,setProfileImage] = useState('');
-  const [imageObject,setImageObject] = useState();
-  
+export default function MyProfile() {
+  const [details, setDetails] = useState();
+
+  const [profileImage, setProfileImage] = useState(
+    'https://www.nicepng.com/png/detail/136-1366211_group-of-10-guys-login-user-icon-png.png',
+  );
+  const [imageObject, setImageObject] = useState();
+  const [isDetailsLoaded, setIsDetailsLoad] = useState(false);
+
+  // const handelDetails = jsonText => {
+  //   const parsedObject = JSON.parse(jsonText);
+  //   setDetails(parsedObject);
+  //   setProfileImage(parsedObject.image);
+  // };
+
+  const handleNameChange = text => {
+    // Create a new object with the updated name property
+    setDetails({...details, name: text});
+  };
+
+  const handleAboutChange = text => {
+    // Create a new object with the updated name property
+    setDetails({...details, about: text});
+  };
+
+  const navigation = useNavigation();
+  const goToMyProfile = () => {
+    navigation.navigate('myProfile');
+  };
 
   const loadMyDetails = async () => {
     const userJSONText = await AsyncStorage.getItem('user_id');
     var request = new XMLHttpRequest();
     request.onreadystatechange = function () {
       if (request.readyState == 4 && request.status == 200) {
-        // console.log(request.responseText);
+        // handelDetails(request.responseText);
         setDetails(JSON.parse(request.responseText));
+        setProfileImage(baseUrl+JSON.parse(request.responseText).image);
+        console.log(baseUrl+JSON.parse(request.responseText).image); 
       }
     };
 
     request.open(
       'GET',
-      'http://192.168.8.106/chatfox/myProfile.php?u=' + userJSONText,
+      baseUrl + 'chatfox/myProfile.php?u=' + JSON.parse(userJSONText),
       true,
     );
     request.send();
   };
 
   useEffect(() => {
-    loadMyDetails();
-  },[]);
+    async function loadDetails() {
+      await loadMyDetails();
+    }
+    loadDetails();
+  }, []);
 
-  const getProfileimage = async()=>{
+  const updateProfile = async () => {
+    const userJSONText = await AsyncStorage.getItem('user_id');
+    var request = new XMLHttpRequest();
+    var form = new FormData();
+    form.append('name', details.name);
+    form.append('about', details.about);
+    form.append('mobile', details.mobile);
+    form.append('image', imageObject);
+    form.append('id', JSON.parse(userJSONText));
+    request.onreadystatechange = function () {
+      if (request.readyState == 4 && request.status == 200) {
+        loadMyDetails();
+      }
+    };
+
+    request.open(
+      'POST',
+      baseUrl + 'chatfox/updateProfile.php?u=' + JSON.parse(userJSONText),
+      true,
+    );
+    request.send(form);
+  };
+
+  const getProfileimage = async () => {
     const options = {
       mediaType: 'photo',
     };
@@ -49,9 +104,6 @@ export default function myProfile() {
     const result = await launchImageLibrary(options);
 
     if (result.didCancel == true) {
-      setProfileImage(
-        'https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg',
-      );
     } else {
       const image = {
         uri: result.assets[0].uri,
@@ -61,10 +113,12 @@ export default function myProfile() {
       setProfileImage(result.assets[0].uri);
       setImageObject(image);
     }
-  }
+  };
 
+  useEffect(() => {
+    setIsDetailsLoad(true);
+  }, [details]);
 
-  console.log(details);
   return (
     <SafeAreaView style={style.mainSafe}>
       <View>
@@ -72,13 +126,15 @@ export default function myProfile() {
           <View style={style.myProfileView2}>
             <Image
               source={{
-                uri: profileImage,
+                uri: profileImage+ '?' + new Date(),
               }}
               style={style.myProfileImage1}
             />
 
             <View style={style.myProfileView3}>
-              <TouchableOpacity style={style.myProfileTucheble1} onPress={getProfileimage}>
+              <TouchableOpacity
+                style={style.myProfileTucheble1}
+                onPress={getProfileimage}>
                 <Icon name="camera" size={30} color="black" />
               </TouchableOpacity>
             </View>
@@ -95,10 +151,9 @@ export default function myProfile() {
             </View>
             <View style={style.myProfileView7}>
               <TextInput
-                placeholder="sanchitha"
-                // value={}
+                value={details?.name}
                 style={style.myProfiletextInput1}
-                onChangeText={(text)=>{details.name}}
+                onChangeText={handleNameChange}
               />
               <Text style={style.myProfileText2}>
                 This is not your username or pin this name will be visible to
@@ -118,9 +173,11 @@ export default function myProfile() {
             </View>
             <View style={style.myProfileView14}>
               <TextInput
-                placeholder="sanchitha"
+                placeholder="Type Anything You Like ...."
+                placeholderTextColor="gray"
                 style={style.myProfileTextInput2}
-                value={details.about}
+                value={details?.about}
+                onChangeText={handleAboutChange}
               />
             </View>
           </View>
@@ -135,15 +192,16 @@ export default function myProfile() {
               <Text style={style.myProfileText4}>Phone</Text>
             </View>
             <View style={style.myProfileView20}>
-              <Text style={style.myProfileText5}>{details.mobile}</Text>
+              <Text style={style.myProfileText5}>{details?.mobile}</Text>
             </View>
           </View>
         </View>
       </View>
-      <TouchableOpacity style={style.myProfileToucheble2}>
+      <TouchableOpacity
+        style={style.myProfileToucheble2}
+        onPress={updateProfile}>
         <Text style={style.myProfileText6}>Save</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
-
 }

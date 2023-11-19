@@ -8,6 +8,7 @@ import {
   View,
   Alert,
   FlatList,
+  Button,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {style} from '../views/styles/style';
@@ -15,36 +16,39 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import MessageCard from './components/MessageCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
+import baseUrl from '../baseurl';
 
 export default function Main() {
-  const [item, setItem] = useState([]);
+  const [item, setItem] = useState([]); 
   const navigation = useNavigation();
 
   const loadFriend = async () => {
     const userJSONText = await AsyncStorage.getItem('user_id');
-    // const formData = new FormData();
-    // formData.append('user_id', userJSONText);
-    // formData.append('text', "");
-
     var request = new XMLHttpRequest();
     request.onreadystatechange = function () {
       if (request.readyState == 4 && request.status == 200) {
-        // console.log(request.responseText);
-        setItem(JSON.parse(request.responseText));
+        console.log(request.responseText);
+        if (
+          JSON.parse(request.responseText) == 'No Friends You Have Yet .....'
+        ) {
+          setItem('No Friends You Have Yet .....');
+        } else {
+          setItem(JSON.parse(request.responseText));
+        } 
       }
     };
 
     request.open(
-      'GET',
-      'http://192.168.8.106/chatfox/loadfriend.php?u=' + userJSONText,
+      'GET', 
+      baseUrl+'chatfox/loadfriend.php?u=' + userJSONText,
       true,
     );
     request.send();
   };
 
   // useEffect(() => {
-    loadFriend();
-  // }, []);
+  loadFriend();
+  // }, []); 
 
   const GoFindPeople = () => {
     navigation.navigate('request');
@@ -55,7 +59,7 @@ export default function Main() {
   const goToMyProfile = () => {
     navigation.navigate('myProfile');
   };
-
+  // console.log(item)
   return (
     <SafeAreaView style={style.mainSafe}>
       {/* navbar */}
@@ -86,16 +90,32 @@ export default function Main() {
 
       {/* Massage Card */}
       {/* <ScrollView> */}
-      <FlatList data={item} renderItem={itemUI} />
+
+      {item == 'No Friends You Have Yet .....' ? (
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: 50,
+          }}>
+          <Text style={{fontSize: 18, color: 'black', marginBottom: 10}}>
+            {item}
+          </Text> 
+          <Button title="Add Friends" onPress={goSearchPage} />
+        </View>
+      ) : (
+        <FlatList data={item} renderItem={itemUI} />
+      )}
+
       {/* </ScrollView> */}
       {/* Massage Card */}
 
       <Pressable style={style.peopleBtn} onPress={GoFindPeople}>
         <Icon name="group" size={30} color="#2c3e50" />
-      </Pressable>
+      </Pressable> 
     </SafeAreaView>
   );
-}
+} 
 
 const itemUI = item => {
   return (
@@ -105,6 +125,8 @@ const itemUI = item => {
       message={item.item.message}
       name={item.item.name}
       id={item.item.id}
+      image={item.item.image}
     />
   );
 };
+ 

@@ -13,13 +13,14 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import SelectDropdown from 'react-native-select-dropdown';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import { useNavigation } from '@react-navigation/native';
+import baseUrl from '../baseurl';
 
 export default function signUp() {
   const [name, setName] = useState('');
   const [profileImage, setProfileImage] = useState(
-    'https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg',
+    'https://www.nicepng.com/png/detail/136-1366211_group-of-10-guys-login-user-icon-png.png',
   );
-  const [imageObject, setImageObject] = useState(null);
+  const [imageObject, setImageObject] = useState();
   const [newPassword, setNewPasword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [mobile, setMobile] = useState('');
@@ -27,29 +28,8 @@ export default function signUp() {
   const countries = ['Matara', 'Galle', 'Colombo', 'Tangalle'];
   const navigation = useNavigation();
 
-  const imagePicker = async () => {
-    const options = {
-      mediaType: 'photo',
-    };
-
-    const result = await launchImageLibrary(options);
-
-    if (result.didCancel == true) {
-      setProfileImage(
-        'https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg',
-      );
-    } else {
-      const image = {
-        uri: result.assets[0].uri,
-        name: 'profile.png',
-        type: 'image/jpeg',
-      };
-      setProfileImage(result.assets[0].uri);
-      setImageObject(image);
-    }
-  };
-
   const signUp = () => {
+    // console.log(imageObject);
     const form = new FormData();
     form.append('userName', name);
     form.append('newPassword', newPassword);
@@ -66,14 +46,37 @@ export default function signUp() {
         if(response == "1"){
           navigation.navigate('signIn');
         }else{
+          console.log(response);
         Alert.alert("Massage",response);
       }
 
       }
     }
-    request.open("POST","http://192.168.8.106/chatfox/signUp.php",true);
+    request.open("POST",baseUrl+"chatfox/signUp.php",true);
     request.send(form);
 
+  };
+
+  const imagePicker = async () => {
+    const options = {
+      mediaType: 'photo',
+    };
+
+    const result = await launchImageLibrary(options);
+
+    if (result.didCancel == true) {
+      setProfileImage(
+        'https://www.nicepng.com/png/detail/136-1366211_group-of-10-guys-login-user-icon-png.png',
+      );
+    } else {
+      const image = {
+        uri: result.assets[0].uri,
+        name: 'profile.png',
+        type: 'image/jpeg',
+      };
+      setProfileImage(result.assets[0].uri);
+      setImageObject(image);
+    }
   };
 
   return (
@@ -102,6 +105,7 @@ export default function signUp() {
             <TextInput
               style={style.signUpTextInput1}
               placeholder="Your Name"
+              placeholderTextColor="gray"
               onChangeText={setName}
             />
             <Icon name="user" size={25} color="black" style={style.inputIcon} />
@@ -110,6 +114,8 @@ export default function signUp() {
             <TextInput
               style={style.signUpTextInput1}
               placeholder="New Password"
+              secureTextEntry={true}
+              placeholderTextColor="gray"
               onChangeText={setNewPasword}
             />
             <Icon name="key" size={25} color="black" style={style.inputIcon} />
@@ -118,6 +124,8 @@ export default function signUp() {
             <TextInput
               style={style.signUpTextInput1}
               placeholder="Confirm Password"
+              secureTextEntry={true}
+              placeholderTextColor="gray"
               onChangeText={setConfirmPassword}
             />
             <Icon name="key" size={25} color="black" style={style.inputIcon} />
@@ -126,6 +134,7 @@ export default function signUp() {
             <TextInput
               style={style.signUpTextInput1}
               placeholder="Your Mobile Number"
+              placeholderTextColor="gray"
               keyboardType="numeric"
               onChangeText={setMobile}
             />
@@ -143,7 +152,7 @@ export default function signUp() {
                 setCity(selectedItem);
               }}
               buttonStyle={style.signUpSelect}
-              defaultButtonText="Select Your Country"
+              defaultButtonText="Select Your City"
             />
             <Icon
               name="globe"

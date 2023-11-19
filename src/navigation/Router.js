@@ -2,12 +2,12 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { createStackNavigator } from '@react-navigation/stack';
 import Main from '../views/Main';
-import chat from '../views/chat';
-import contact from '../views/contacts';
-import request from '../views/request';
-import myProfile from '../views/myProfile';
-import signUp from '../views/signUp';
-import signIn from '../views/signIn';
+import chat from '../views/Chat';
+import contact from '../views/Contacts';
+import request from '../views/Request';
+import MyProfile from '../views/MyProfile';
+import signUp from '../views/SignUp';
+import signIn from '../views/SignIn';
 
 export default function Router() {
   const Stack = createStackNavigator();
@@ -19,7 +19,7 @@ export default function Router() {
         <Stack.Screen name="request" options={{headerShown:false}} component={request} />
         <Stack.Screen name="signUp" options={{headerShown:false}} component={signUp} />
         <Stack.Screen name="signIn" options={{headerShown:false}} component={signIn} />
-        <Stack.Screen name="myProfile" component={myProfile} />
+        <Stack.Screen name="myProfile" component={MyProfile} />
       </Stack.Navigator>
   )
 }

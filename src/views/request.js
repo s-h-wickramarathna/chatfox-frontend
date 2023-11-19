@@ -12,6 +12,7 @@ import {style} from './styles/style';
 import {ScrollView} from 'react-native-gesture-handler';
 import RequestCard from './components/RequestCard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import baseUrl from '../baseurl';
 
 export default function request() {
   const [friend, setFriend] = useState([]);
@@ -29,7 +30,7 @@ export default function request() {
 
     request.open(
       'GET',
-      'http://192.168.8.106/chatfox/viewRequest.php?u=' + userJSONText,
+      baseUrl+ "chatfox/viewRequest.php?u=" + userJSONText,
       true,
     );
     request.send();

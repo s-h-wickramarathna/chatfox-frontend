@@ -5,6 +5,7 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
+import baseUrl from '../baseurl';
 
 export default function signIn() {
   const [mobile,setMobile] = useState(null);
@@ -46,7 +47,7 @@ const signIn = () => {
 
     }
   }
-  request.open("POST","http://192.168.8.106/chatfox/signIn.php",true);
+  request.open("POST",baseUrl+"chatfox/signIn.php",true);
   request.send(form);
 
 }
@@ -64,17 +65,18 @@ const signIn = () => {
         </View>
         <View style={style.inputSet}>
           <View style={style.signUpView1}>
-            <TextInput style={style.signUpTextInput1} placeholder="User Mobile" keyboardType='numeric' onChangeText={setMobile}/>
+            <TextInput style={style.signUpTextInput1} placeholder="User Mobile" placeholderTextColor="gray" keyboardType='numeric' onChangeText={setMobile}/>
             <Icon name="user" size={25} color="black" style={style.inputIcon} />
           </View>
           <View style={style.signUpView1}>
-            <TextInput style={style.signUpTextInput1} placeholder="User Password" onChangeText={setPassword}/>
+            <TextInput style={style.signUpTextInput1} placeholder="User Password" secureTextEntry={true} placeholderTextColor="gray" onChangeText={setPassword}/>
             <Icon name="key" size={25} color="black" style={style.inputIcon} />
           </View>
         </View>
         <View style={style.btnview}>
             <TouchableOpacity style={style.signInBtn} onPress={signIn}><Text style={style.signUpText1}>Sign In</Text></TouchableOpacity>
             <TouchableOpacity style={style.signInBtn2}><Text style={style.signInText1}>Forgot Password ?</Text></TouchableOpacity>
+            <TouchableOpacity style={style.signInBtn2} onPress={()=>{navigation.navigate('signUp')}}><Text style={style.signInTextc2}>Create New Account</Text></TouchableOpacity>
         </View>
       </View>
     </SafeAreaView>

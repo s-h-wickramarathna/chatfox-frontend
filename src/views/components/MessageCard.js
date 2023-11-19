@@ -3,6 +3,7 @@ import React from 'react';
 import {style} from '../styles/style';
 import MessageCountBadge from './MessageCountBadge';
 import { useNavigation } from '@react-navigation/native';
+import baseUrl from '../../baseurl';
 
 export default function MessageCard(props) {
 
@@ -22,7 +23,7 @@ export default function MessageCard(props) {
       <View style={style.MessageCardView1}>
         <View style={style.MessageCardView2}>
           <Image
-            source={{uri: 'https://reactjs.org/logo-og.png'}}
+            source={{uri: baseUrl+ props.image}}
             style={style.MessageCardImage}
           />
         </View>
@@ -32,7 +33,7 @@ export default function MessageCard(props) {
             <Text style={style.MessageCardText}>
             {props.name}
             </Text>
-            <Text>{props.message}</Text>
+            <Text style={{color:'gray'}}>{props.message}</Text>
           </View>
         </View>
       </View>
